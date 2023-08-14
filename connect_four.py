@@ -83,7 +83,7 @@ def game_is_over(board):
   # returns True if game is won or no moves are left
   return win(board, "X") or win(board, "O") or len(available_moves(board)) == 0
 
-def play():
+def main():
     # sets board dimensions
     my_board = []
     for col in range(7):
@@ -131,4 +131,4 @@ def play():
         print("It was a tie!")
         print_board(my_board)
 
-play()
+main()
