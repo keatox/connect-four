@@ -1,11 +1,13 @@
 from random import randint
+from random import choice
+import time
 
 def print_board(board):
     #prints board based on given dimensions
-    header = ' '
+    top = ' '
     for num in range(1, len(board)+1):
-        header += ' '+ str(num) +'  '
-    print(header)
+        top += ' '+ str(num) +'  '
+    print(top)
     print('\u250C'+'---\u252C' * (len(board)-1) +'---\u2510')
 
     for row in range(len(board[0])):
@@ -32,7 +34,6 @@ def valid_move(board, move):
 def select_space(board, col, player):
 	# checks for valid move
     if not valid_move(board, col):
-        print("Trying to place an " + player + " in column " + str(col))
         print("Pick a column between 1 and " + str(len(board)) + " that is not full")
         print()
         return False
@@ -87,32 +88,47 @@ def play():
     my_board = []
     for col in range(7):
         my_board.append([' '] * 6)
-    multi = input("Would you like to play singleplayer or multiplayer? Select S/M accordingly.")
+    multi = input("Would you like to play singleplayer or multiplayer? Select S/M accordingly: ")
     #runs game
-    if multi.lower() == 'm':
-        turn = "O"
-        winner = False
-        while(not game_is_over(my_board)):
-            print_board(my_board)
-            move = 0
-            available = available_moves(my_board)
+    turn = "O"
+    if multi.lower() == 's':
+        order = randint(0,1)
+        if order == 0:
+            turn = "X"
+            print("You are going second.")
+        else:
+            print("You are going first.")
+    winner = False
+    while(not game_is_over(my_board)):
+        print_board(my_board)
+        move = 0
+        available = available_moves(my_board)
+        if multi.lower() == 'm':
             while (move not in available):
-                move = int(input("It is " + turn + "'s turn. Please select a column. Your optionns are " + str(available)))
-            select_space(my_board, move, turn)
+                move = int(input("It is " + turn + "'s turn. Please select a column. Your options are " + str(available)))
+                select_space(my_board, move, turn)
+        elif multi.lower() == 's':
+            if turn == "X":
+                time.sleep(1)
+                move = choice(available)
+                print("Computer chose " + str(move) + ".")
+                select_space(my_board, move, turn)
+            elif turn == "O":
+                while (move not in available):
+                    move = int(input("It is " + turn + "'s turn. Please select a column. Your optionns are " + str(available)))
+                    select_space(my_board, move, turn)
 
-            if win(my_board, turn):
-                print(turn + " has won!")
-                print_board(my_board)
-                winner = True
-                break
-
-            if turn == 'O':
-                turn = "X"
-            else:
-                turn = 'O'
-                
-        if not winner:
-            print("It was a tie!")
+        if win(my_board, turn):
+            print(turn + " has won!")
             print_board(my_board)
+            winner = True
+            break
+        if turn == 'O':
+            turn = "X"
+        else:
+            turn = 'O'          
+    if not winner:
+        print("It was a tie!")
+        print_board(my_board)
 
 play()
